@@ -72,6 +72,9 @@ void Value::set_data(char *data, int length)
     case DATES: {
       num_value_.date_value_ = *(int *)data;
       char buf[16]           = {0};
+      // select date display
+      // in tuple.h RC cell_at(int index, Value &cell) const override
+      // contains set_data part
       snprintf(buf,
           sizeof(buf),
           "%04d-%02d-%02d",
@@ -226,6 +229,18 @@ int Value::compare(const Value &other) const
   } else if (this->attr_type_ == FLOATS && other.attr_type_ == INTS) {
     float other_data = other.num_value_.int_value_;
     return common::compare_float((void *)&this->num_value_.float_value_, (void *)&other_data);
+  } else if (this->attr_type_ == CHARS && other.attr_type_ == DATES) {
+    // const_cast<Value &>(*this).set_date(this->data());
+    // int this_data = this->num_value_.date_value_;
+    int y, m, d;
+    sscanf(this->data(), "%d-%d-%d", &y, &m, &d);
+    bool b = check_date(y, m, d);
+    if (!b)
+      return -1;
+    int this_data = y * 10000 + m * 100 + d;
+    // LOG_TRACE("this_data: %d, other_data: %d, this: %s",this_data, other.num_value_.date_value_,
+    // this->str_value_.c_str());
+    return common::compare_int((void *)&this_data, (void *)&other.num_value_.date_value_);
   }
   LOG_WARN("not supported");
   return -1;  // TODO return rc?
