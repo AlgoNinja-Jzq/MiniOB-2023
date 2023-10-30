@@ -390,7 +390,8 @@ value:
     }
     |SSS {
       char *tmp = common::substr($1,1,strlen($1)-2);
-      $$ = new Value(tmp);
+      int len = strlen(tmp);
+      $$ = new Value(tmp, len);
       free(tmp);
     }
     ;
