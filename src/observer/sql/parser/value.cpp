@@ -107,13 +107,15 @@ void Value::set_float(float val)
 }
 void Value::set_date(const char *v)
 {
-  attr_type_ = DATES;
   int y, m, d;
   sscanf(v, "%d-%d-%d", &y, &m, &d);
   bool b = check_date(y, m, d);
-  if (!b)
+  if (!b) {
+    set_string(v, strlen(v));
     return;
+  }
   int dv                 = y * 10000 + m * 100 + d;
+  attr_type_             = DATES;
   num_value_.date_value_ = dv;
   length_                = sizeof(dv);
 }
@@ -230,16 +232,12 @@ int Value::compare(const Value &other) const
     float other_data = other.num_value_.int_value_;
     return common::compare_float((void *)&this->num_value_.float_value_, (void *)&other_data);
   } else if (this->attr_type_ == CHARS && other.attr_type_ == DATES) {
-    // const_cast<Value &>(*this).set_date(this->data());
-    // int this_data = this->num_value_.date_value_;
     int y, m, d;
     sscanf(this->data(), "%d-%d-%d", &y, &m, &d);
     bool b = check_date(y, m, d);
     if (!b)
       return -1;
     int this_data = y * 10000 + m * 100 + d;
-    // LOG_TRACE("this_data: %d, other_data: %d, this: %s",this_data, other.num_value_.date_value_,
-    // this->str_value_.c_str());
     return common::compare_int((void *)&this_data, (void *)&other.num_value_.date_value_);
   }
   LOG_WARN("not supported");

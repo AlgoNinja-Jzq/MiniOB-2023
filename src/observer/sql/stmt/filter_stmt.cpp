@@ -77,6 +77,13 @@ RC get_table_and_field(Db *db, Table *default_table, std::unordered_map<std::str
   return RC::SUCCESS;
 }
 
+bool check_day(int y, int m, int d)
+{
+  static int month[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+  bool       leap    = (y % 400 == 0 || (y % 100 && y % 4 == 0));
+  return y > 0 && (m > 0) && (m <= 12) && (d > 0) && (d <= ((m == 2 && leap) ? 1 : 0) + month[m]);
+}
+
 RC FilterStmt::create_filter_unit(Db *db, Table *default_table, std::unordered_map<std::string, Table *> *tables,
     const ConditionSqlNode &condition, FilterUnit *&filter_unit)
 {
@@ -119,6 +126,21 @@ RC FilterStmt::create_filter_unit(Db *db, Table *default_table, std::unordered_m
     filter_obj.init_attr(Field(table, field));
     filter_unit->set_right(filter_obj);
   } else {
+    if (condition.right_value.attr_type() == CHARS) {
+      int y, m, d;
+      sscanf(condition.right_value.data(), "%d-%d-%d", &y, &m, &d);
+      bool b = check_day(y, m, d);
+      if (!b)
+        return RC::INVALID_ARGUMENT;
+    } else if (condition.right_value.attr_type() == DATES) {
+      int  dv = condition.right_value.get_date();
+      int  y  = dv / 10000;
+      int  m  = (dv % 10000) / 100;
+      int  d  = dv % 100;
+      bool b  = check_day(y, m, d);
+      if (!b)
+        return RC::INVALID_ARGUMENT;
+    }
     FilterObj filter_obj;
     filter_obj.init_value(condition.right_value);
     filter_unit->set_right(filter_obj);
