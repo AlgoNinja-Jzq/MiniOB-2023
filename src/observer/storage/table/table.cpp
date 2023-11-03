@@ -473,6 +473,23 @@ RC Table::delete_record(const Record &record)
   return rc;
 }
 
+RC Table::update_record(Record &record, Value &value, int offset)
+{
+  RC     rc = RC::SUCCESS;
+  Record origin_record(record);
+  rc = record_handler_->update_record(offset, value, &record.rid());
+  if (rc != RC::SUCCESS) {
+    LOG_ERROR("Update record failed. table name=%s, rc=%s", table_meta_.name(), strrc(rc));
+    return rc;
+  }
+  // 更新索引
+  for (auto index : indexes_) {
+    index->delete_entry(origin_record.data(), &origin_record.rid());
+    index->insert_entry(record.data(), &record.rid());
+  }
+  return rc;
+}
+
 RC Table::insert_entry_of_indexes(const char *record, const RID &rid)
 {
   RC rc = RC::SUCCESS;
