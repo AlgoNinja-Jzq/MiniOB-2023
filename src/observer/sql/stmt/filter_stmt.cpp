@@ -129,19 +129,11 @@ RC FilterStmt::create_filter_unit(Db *db, Table *default_table, std::unordered_m
     if (condition.right_value.attr_type() == CHARS) {
       int y, m, d;
       int c = sscanf(condition.right_value.data(), "%d-%d-%d", &y, &m, &d);
-      if (c == 3) {
+      if (c == 3) {  // date input
         bool b = check_day(y, m, d);
         if (!b)
           return RC::INVALID_ARGUMENT;
       }
-    } else if (condition.right_value.attr_type() == DATES) {
-      int  dv = condition.right_value.get_date();
-      int  y  = dv / 10000;
-      int  m  = (dv % 10000) / 100;
-      int  d  = dv % 100;
-      bool b  = check_day(y, m, d);
-      if (!b)
-        return RC::INVALID_ARGUMENT;
     }
     FilterObj filter_obj;
     filter_obj.init_value(condition.right_value);
