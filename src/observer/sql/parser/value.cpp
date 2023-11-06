@@ -244,6 +244,29 @@ int Value::compare(const Value &other) const
   return -1;  // TODO return rc?
 }
 
+bool Value::like(const Value &other) const
+{
+  if (this->attr_type_ != other.attr_type_ || this->attr_type_ != CHARS) {
+    LOG_WARN("not supported");
+    return false;
+  }
+
+  std::string ssleft(this->data(), this->length_);
+  std::string left = std::string(this->data(), strlen(ssleft.c_str()));
+  std::string ssright(other.data(), other.length_);
+  std::string right = std::string(other.data(), strlen(ssright.c_str()));
+  // replace '_' -> '.', '%' -> '.*?';
+  std::string::size_type pos(0);
+  while ((pos = right.find('_')) != std::string::npos) {
+    right.replace(pos, 1, ".");
+  }
+  while ((pos = right.find('%')) != std::string::npos) {
+    right.replace(pos, 1, ".*?");
+  }
+  std::regex reg(right);
+  return std::regex_match(left, reg);
+}
+
 int Value::get_int() const
 {
   switch (attr_type_) {

@@ -115,6 +115,8 @@ LOAD                                    RETURN_TOKEN(LOAD);
 DATA                                    RETURN_TOKEN(DATA);
 INFILE                                  RETURN_TOKEN(INFILE);
 EXPLAIN                                 RETURN_TOKEN(EXPLAIN);
+NOT                                     RETURN_TOKEN(NOT);
+LIKE                                    RETURN_TOKEN(LIKE);
 {ID}                                    yylval->string=strdup(yytext); RETURN_TOKEN(ID);
 {QUOTE}[0-9]{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01]){QUOTE} yylval->string=strdup(yytext); RETURN_TOKEN(DATE_STR);
 "("                                     RETURN_TOKEN(LBRACE);
@@ -135,6 +137,7 @@ EXPLAIN                                 RETURN_TOKEN(EXPLAIN);
 "/"                                     { return yytext[0]; }
 \"[^"]*\"                               yylval->string = strdup(yytext); RETURN_TOKEN(SSS);
 '[^']*\'                                yylval->string = strdup(yytext); RETURN_TOKEN(SSS);
+{QUOTE}[\42\47A-Za-z0-9_/\.\-\%]*{QUOTE} yylval->string = strdup(yytext); RETURN_TOKEN(SSS);
 
 .                                       LOG_DEBUG("Unknown character [%c]",yytext[0]); return yytext[0];
 %%

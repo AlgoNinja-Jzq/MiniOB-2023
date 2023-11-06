@@ -15,6 +15,7 @@ See the Mulan PSL v2 for more details. */
 #pragma once
 
 #include <string>
+#include <regex>
 
 /**
  * @brief 属性的类型
@@ -65,7 +66,8 @@ public:
 
   std::string to_string() const;
 
-  int compare(const Value &other) const;
+  int  compare(const Value &other) const;
+  bool like(const Value &other) const;
 
   const char *data() const;
   int         length() const { return length_; }
