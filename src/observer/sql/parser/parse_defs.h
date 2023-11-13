@@ -88,8 +88,7 @@ struct RelationSqlNode
 
 struct JoinSqlNode
 {
-  const std::string             left  = nullptr;
-  const std::string             right = nullptr;
+  std::vector<std::string>      relations;
   std::vector<ConditionSqlNode> conditions;
 };
 
