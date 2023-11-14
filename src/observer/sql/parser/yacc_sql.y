@@ -445,7 +445,6 @@ select_stmt:        /*  select 语句的语法解析树*/
       }
       $$->selection.relations.push_back($4);
       std::reverse($$->selection.relations.begin(), $$->selection.relations.end());
-
       if ($6 != nullptr) {
         $$->selection.conditions.swap(*$6);
         delete $6;
@@ -597,7 +596,7 @@ rel_condition_list:
         $$->_rel_list = *(new std::vector<std::string>);
         $$->_condition_list = *(new std::vector<ConditionSqlNode>);
       }
-      if ($4 != nullptr) {
+      if($4 != nullptr) {
         for (const ConditionSqlNode& condition : *$4) {
           $$->_condition_list.push_back(condition);
         }
@@ -607,19 +606,19 @@ rel_condition_list:
       free($3);
     }
     ;
-
 inner_join_conditions:
-	/* empty */ {
-    $$ = nullptr;
-  }
-	| ON condition condition_list {
-    if($3 != nullptr) {
-      $$ = $3;
-    } else {
-      $$ = new std::vector<ConditionSqlNode>;
+	/* empty */
+	{
+      $$ = nullptr;
     }
-    $$->emplace_back(*$2);
-    delete $2;
+	| ON condition condition_list {
+      if ($3 != nullptr) {
+        $$ = $3;
+      } else {
+        $$ = new std::vector<ConditionSqlNode>;
+      }
+      $$->emplace_back(*$2);
+      delete $2;
 	}
 	;
 where:
@@ -645,16 +644,6 @@ condition_list:
       $$ = $3;
       $$->emplace_back(*$1);
       delete $1;
-    }
-    | ON condition AND condition_list {
-      $$ = $4;
-      $$->emplace_back(*$2);
-      delete $2;
-    }
-    | ON condition {
-      $$ = new std::vector<ConditionSqlNode>;
-      $$->emplace_back(*$2);
-      delete $2;
     }
     ;
 condition:
