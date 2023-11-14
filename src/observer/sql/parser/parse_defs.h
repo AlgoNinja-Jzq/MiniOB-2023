@@ -79,20 +79,6 @@ struct ConditionSqlNode
 };
 
 /**
- * @brief 描述查询的表以及表的连接条件
- */
-struct RelationSqlNode
-{
-  std::string table;
-};
-
-struct JoinSqlNode
-{
-  std::vector<std::string>      relations;
-  std::vector<ConditionSqlNode> conditions;
-};
-
-/**
  * @brief 描述一个select语句
  * @ingroup SQLParser
  * @details 一个正常的select语句描述起来比这个要复杂很多，这里做了简化。
@@ -105,10 +91,10 @@ struct JoinSqlNode
 
 struct SelectSqlNode
 {
-  std::vector<RelAttrSqlNode>   attributes;  ///< attributes in select clause
-  std::vector<std::string>      relations;   ///< 查询的表
-  std::vector<JoinSqlNode>      join;        ///< join内连接
-  std::vector<ConditionSqlNode> conditions;  ///< 查询条件，使用AND串联起来多个条件
+  std::vector<RelAttrSqlNode>   attributes;       ///< attributes in select clause
+  std::vector<std::string>      relations;        ///< 查询的表
+  std::vector<ConditionSqlNode> conditions;       ///< 查询条件，使用AND串联起来多个条件
+  std::vector<ConditionSqlNode> join_conditions;  ///< 存放 on 后面的连接条件
 };
 
 /**
@@ -268,6 +254,12 @@ struct ErrorSqlNode
   std::string error_msg;
   int         line;
   int         column;
+};
+
+struct RelationAndConditionTempList
+{
+  std::vector<std::string>      _rel_list;
+  std::vector<ConditionSqlNode> _condition_list;
 };
 
 /**
