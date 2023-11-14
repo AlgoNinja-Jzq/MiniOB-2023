@@ -430,7 +430,7 @@ update_stmt:      /*  update 语句的语法解析树*/
     }
     ;
 select_stmt:        /*  select 语句的语法解析树*/
-    SELECT select_attr FROM ID rel_list where
+    SELECT select_attr FROM ID rel_list join_list where
     {
       $$ = new ParsedSqlNode(SCF_SELECT);
       if ($2 != nullptr) {
@@ -443,67 +443,43 @@ select_stmt:        /*  select 语句的语法解析树*/
       }
       $$->selection.relations.push_back($4);
       std::reverse($$->selection.relations.begin(), $$->selection.relations.end());
-      if ($6 != nullptr) {
-        $$->selection.conditions.swap(*$6);
-        delete $6;
+
+      if ($7 != nullptr) {
+        $$->selection.conditions.swap(*$7);
+        delete $7;
       }
       free($4);
-    }
-    | SELECT select_attr FROM ID INNER JOIN ID condition_list join_list where
-    {
-      $$ = new ParsedSqlNode(SCF_SELECT);
-      if ($2 != nullptr) {
-        $$->selection.attributes.swap(*$2);
-        delete $2;
+
+      if ($6 != nullptr) {
+        $$->selection.relations.insert($$->selection.relations.end(), $6->relations.begin(), $6->relations.end());
+        $$->selection.conditions.insert($$->selection.conditions.end(), $6->conditions.begin(), $6->conditions.end());
+        delete $6;
       }
-      if ($8 != nullptr) {
-        $$->selection.conditions.swap(*$8);
-        delete $8;
-      }
-      if ($9 != nullptr) {
-        $$->selection.relations.swap($9->relations);
-        $$->selection.conditions.insert($$->selection.conditions.end(), $9->conditions.begin(), $9->conditions.end());
-        delete $9;
-      }
-      $$->selection.relations.push_back($7);
-      $$->selection.relations.push_back($4);
-      std::reverse($$->selection.relations.begin(), $$->selection.relations.end());
-      if ($10 != nullptr) {
-        $$->selection.conditions.insert($$->selection.conditions.end(), $10->begin(), $10->end());
-        delete $10;
-      }
-      delete $7;
-      delete $4;
     }
     ;
 join_list:
     {
       $$ = nullptr;
     }
-    | INNER JOIN ID ON condition condition_list join_list {
-      if ($7 != nullptr) {
-        $$ = $7;
-      } else {
-        $$ = new JoinSqlNode;
-      }
-      $$->relations.emplace_back($3);
-      if ($6 == nullptr) {
-        $6 = new std::vector<ConditionSqlNode>;
-      }
-      $6->push_back(*$5);
-      $$->conditions.insert($$->conditions.end(), $6->begin(), $6->end());
-      delete $6;
-      delete $5;
-      free($3);
+    | INNER join_list {
+      $$ = $2;
     }
-    | INNER JOIN ID join_list {
+    | JOIN ID ON condition_list join_list {
+      $$ = new JoinSqlNode();
+
       if ($4 != nullptr) {
-        $$ = $4;
-      } else {
-        $$ = new JoinSqlNode;
+        $$->conditions.swap(*$4);
+        delete $4;
       }
-      $$->relations.push_back($3);
-      free($3);
+
+      $$->relations.push_back($2);
+      free($2);
+
+      if ($5 != nullptr) {
+        $$->relations.insert($$->relations.end(), $5->relations.begin(), $5->relations.end());
+        $$->conditions.insert($$->conditions.end(), $5->conditions.begin(), $5->conditions.end());
+        delete $5;
+      }
     }
     ;
 calc_stmt:
@@ -649,16 +625,6 @@ condition_list:
       $$ = $3;
       $$->emplace_back(*$1);
       delete $1;
-    }
-    | ON condition AND condition_list {
-      $$ = $4;
-      $$->emplace_back(*$2);
-      delete $2;
-    }
-    | ON condition {
-      $$ = new std::vector<ConditionSqlNode>;
-      $$->emplace_back(*$2);
-      delete $2;
     }
     ;
 condition:
