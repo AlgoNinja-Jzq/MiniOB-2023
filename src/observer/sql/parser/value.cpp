@@ -244,17 +244,8 @@ int Value::compare(const Value &other) const
     return common::compare_string(
         (void *)(this_data.c_str()), this_data.length(), (void *)(other.str_value_.c_str()), other.str_value_.length());
   } else if (this->attr_type_ == CHARS && other.attr_type_ == INTS) {
+    LOG_TRACE("enter this case");
     std::string other_data = std::to_string(other.num_value_.int_value_);
-    return common::compare_string((void *)(this->str_value_.c_str()),
-        this->str_value_.length(),
-        (void *)(other_data.c_str()),
-        other_data.length());
-  } else if (this->attr_type_ == FLOATS && other.attr_type_ == CHARS) {
-    std::string this_data = std::to_string(this->num_value_.float_value_);
-    return common::compare_string(
-        (void *)(this_data.c_str()), this_data.length(), (void *)(other.str_value_.c_str()), other.str_value_.length());
-  } else if (this->attr_type_ == CHARS && other.attr_type_ == FLOATS) {
-    std::string other_data = std::to_string(other.num_value_.float_value_);
     return common::compare_string((void *)(this->str_value_.c_str()),
         this->str_value_.length(),
         (void *)(other_data.c_str()),
