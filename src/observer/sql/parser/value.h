@@ -16,6 +16,7 @@ See the Mulan PSL v2 for more details. */
 
 #include <string>
 #include <regex>
+#include <cmath>
 
 /**
  * @brief 属性的类型
@@ -98,3 +99,6 @@ private:
   } num_value_;
   std::string str_value_;
 };
+
+int   chars_to_ints(std::string str);
+float chars_to_floats(std::string str);

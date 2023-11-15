@@ -45,6 +45,9 @@ int compare_string(void *arg1, int arg1_max_length, void *arg2, int arg2_max_len
   const char *s2     = (const char *)arg2;
   int         maxlen = std::min(arg1_max_length, arg2_max_length);
   int         result = strncmp(s1, s2, maxlen);
+  if (0 != result) {
+    return result;
+  }
 
   if (arg1_max_length > maxlen) {
     return s1[maxlen] - 0;
@@ -53,11 +56,6 @@ int compare_string(void *arg1, int arg1_max_length, void *arg2, int arg2_max_len
   if (arg2_max_length > maxlen) {
     return 0 - s2[maxlen];
   }
-
-  if (0 != result) {
-    return result;
-  }
-
   return 0;
 }
 

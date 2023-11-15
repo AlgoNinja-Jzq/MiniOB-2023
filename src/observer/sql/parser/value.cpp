@@ -240,16 +240,17 @@ int Value::compare(const Value &other) const
     int this_data = y * 10000 + m * 100 + d;
     return common::compare_int((void *)&this_data, (void *)&other.num_value_.date_value_);
   } else if (this->attr_type_ == INTS && other.attr_type_ == CHARS) {
-    std::string this_data = std::to_string(this->num_value_.int_value_);
-    return common::compare_string(
-        (void *)(this_data.c_str()), this_data.length(), (void *)(other.str_value_.c_str()), other.str_value_.length());
+    int other_data = chars_to_ints(other.str_value_);
+    return common::compare_int((void *)&this->num_value_.int_value_, (void *)&other_data);
   } else if (this->attr_type_ == CHARS && other.attr_type_ == INTS) {
-    LOG_TRACE("enter this case");
-    std::string other_data = std::to_string(other.num_value_.int_value_);
-    return common::compare_string((void *)(this->str_value_.c_str()),
-        this->str_value_.length(),
-        (void *)(other_data.c_str()),
-        other_data.length());
+    int this_data = chars_to_ints(this->str_value_);
+    return common::compare_int((void *)&this_data, (void *)&other.num_value_.int_value_);
+  } else if (this->attr_type_ == FLOATS && other.attr_type_ == CHARS) {
+    float other_data = chars_to_floats(other.str_value_);
+    return common::compare_float((void *)&this->num_value_.float_value_, (void *)&other_data);
+  } else if (this->attr_type_ == CHARS && other.attr_type_ == FLOATS) {
+    float this_data = chars_to_floats(this->str_value_);
+    return common::compare_float((void *)&this_data, (void *)&other.num_value_.float_value_);
   }
   LOG_WARN("not supported");
   return -1;  // TODO return rc?
@@ -413,4 +414,41 @@ bool Value::get_boolean() const
     }
   }
   return false;
+}
+
+int chars_to_ints(std::string str)
+{
+  std::string ret;
+  int         i = 0, data = 0, exp = 0;
+  while (str[i] >= '0' && str[i] <= '9') {
+    ret += str[i];
+    i++;
+  }
+  if (ret.empty()) {
+    return 0;
+  } else {
+    for (int j = i - 1; j >= 0; --j) {
+      data += (ret[j] - '0') * pow(10, exp++);
+    }
+    return data;
+  }
+}
+
+float chars_to_floats(std::string str)
+{
+  std::string ret;
+  int         i = 0, exp = 0;
+  float       data = 0;
+  while (str[i] >= '0' && str[i] <= '9') {
+    ret += str[i];
+    i++;
+  }
+  if (ret.empty()) {
+    return 0;
+  } else {
+    for (int j = i - 1; j >= 0; --j) {
+      data += (ret[j] - '0') * pow(10, exp++);
+    }
+    return data;
+  }
 }
