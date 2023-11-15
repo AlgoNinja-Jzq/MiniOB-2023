@@ -438,16 +438,33 @@ float chars_to_floats(std::string str)
 {
   std::string ret;
   int         i = 0, exp = 0;
-  float       data = 0;
-  while (str[i] >= '0' && str[i] <= '9') {
+  float       data     = 0;
+  bool        dot_flag = false;
+  int         dot_pos  = 0;
+  while ((str[i] >= '0' && str[i] <= '9') || str[i] == '.') {
+    if (str[i] == '.') {
+      dot_flag = true;
+      dot_pos  = i;
+    }
     ret += str[i];
     i++;
   }
   if (ret.empty()) {
     return 0;
   } else {
-    for (int j = i - 1; j >= 0; --j) {
-      data += (ret[j] - '0') * pow(10, exp++);
+    if (!dot_flag) {
+      for (int j = i - 1; j >= 0; --j) {
+        data += (ret[j] - '0') * pow(10, exp++);
+      }
+    } else {
+      int ret_lastPos = i - 1;         // 2
+      exp -= (ret_lastPos - dot_pos);  // -1
+      for (int j = i - 1; j >= 0; --j) {
+        if (ret[j] == '.') {
+          continue;
+        }
+        data += (ret[j] - '0') * pow(10, exp++);
+      }
     }
     return data;
   }
