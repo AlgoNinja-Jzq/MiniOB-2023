@@ -1,6 +1,3 @@
-//
-// Created by jzq on 23-11-2.
-//
 #pragma once
 
 #include "sql/operator/logical_operator.h"
@@ -8,6 +5,7 @@
 /**
  * @brief 逻辑算子，用于执行 update 语句
  * @ingroup LogicalOperator
+ * @author jzq
  */
 class UpdateLogicalOperator : public LogicalOperator
 {
@@ -15,7 +13,7 @@ public:
   UpdateLogicalOperator(Table *table, Value &value, const char *field_name);
   virtual ~UpdateLogicalOperator()
   {
-    delete[] field_name_;  // 释放 field_name 的内存
+    delete[] field_name_;  // release field_name memory
   };
 
   LogicalOperatorType type() const override { return LogicalOperatorType::UPDATE; }

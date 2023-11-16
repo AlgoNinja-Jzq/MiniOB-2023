@@ -21,8 +21,9 @@ class Table;
 class FilterStmt;
 
 /**
- * @brief 更新语句
+ * @brief update
  * @ingroup Statement
+ * @author jzq
  */
 class UpdateStmt : public Stmt
 {

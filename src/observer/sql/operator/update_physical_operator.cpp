@@ -1,7 +1,3 @@
-//
-// Created by jzq on 23-11-1.
-//
-
 #include "sql/operator/update_physical_operator.h"
 #include "sql/stmt/update_stmt.h"
 #include "storage/table/table.h"
@@ -9,6 +5,11 @@
 
 using namespace std;
 
+/**
+ * @brief update
+ * @param trx
+ * @author jzq
+ */
 RC UpdatePhysicalOperator::open(Trx *trx)
 {
   if (children_.empty()) {

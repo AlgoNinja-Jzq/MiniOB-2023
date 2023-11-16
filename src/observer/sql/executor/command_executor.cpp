@@ -42,6 +42,10 @@ RC CommandExecutor::execute(SQLStageEvent *sql_event)
       return executor.execute(sql_event);
     } break;
 
+      /**
+       * @brief drop-table
+       * @author jzq
+       */
     case StmtType::DROP_TABLE: {
       DropTableExecutor executor;
       return executor.execute(sql_event);

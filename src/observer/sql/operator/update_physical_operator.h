@@ -1,6 +1,3 @@
-//
-// Created by jzq on 23-11-1.
-//
 #pragma once
 
 #include "sql/operator/physical_operator.h"
@@ -11,20 +8,21 @@ class DeleteStmt;
 /**
  * @brief 物理算子，更新
  * @ingroup PhysicalOperator
+ * @author jzq
  */
 class UpdatePhysicalOperator : public PhysicalOperator
 {
 public:
   UpdatePhysicalOperator(Table *table, Value &value, const char *field_name) : table_(table), value_(value)
   {
-    // 复制 field_name
+    // copy field_name
     field_name_ = new char[strlen(field_name) + 1];
     strcpy(field_name_, field_name);
   }
 
   virtual ~UpdatePhysicalOperator()
   {
-    delete[] field_name_;  // 释放 field_name 的内存
+    delete[] field_name_;  // release field_name memory
   };
 
   PhysicalOperatorType type() const override { return PhysicalOperatorType::UPDATE; }

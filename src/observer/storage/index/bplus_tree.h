@@ -60,6 +60,10 @@ public:
 
   int attr_length() const { return attr_length_; }
 
+  /**
+   * @brief date extension
+   * @author jzq
+   */
   int operator()(const char *v1, const char *v2) const
   {
     switch (attr_type_) {
@@ -128,6 +132,10 @@ public:
 
   int attr_length() const { return attr_length_; }
 
+  /**
+   * @brief date extension
+   * @author jzq
+   */
   std::string operator()(const char *v) const
   {
     switch (attr_type_) {

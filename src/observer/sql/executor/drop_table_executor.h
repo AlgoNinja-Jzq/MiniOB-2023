@@ -1,6 +1,3 @@
-//
-// Created by jzq on 23-10-25.
-//
 #pragma once
 
 #include "common/rc.h"
@@ -8,13 +5,14 @@
 class SQLStageEvent;
 
 /**
- * @brief 创建表的执行器
- * @ingroup Executor
+ *  @brief drop-table
+ *  @ingroup Executor
+ *  @author jzq
  */
 class DropTableExecutor
 {
 public:
-  DropTableExecutor() = default;
+  DropTableExecutor()          = default;
   virtual ~DropTableExecutor() = default;
 
   RC execute(SQLStageEvent *sql_event);

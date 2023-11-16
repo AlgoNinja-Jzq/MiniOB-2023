@@ -62,6 +62,10 @@ RC insert_record_from_file(
       common::strip(file_value);
     }
 
+    /**
+     * @brief date extension
+     * @author jzq
+     */
     switch (field->type()) {
       case INTS:
       case DATES: {

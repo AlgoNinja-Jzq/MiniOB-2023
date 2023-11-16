@@ -1,6 +1,3 @@
-//
-// Created by jzq on 23-10-25.
-//
 #pragma once
 
 #include <string>
@@ -11,14 +8,14 @@
 class Db;
 
 /**
- * @brief 表示创建表的语句
+ * @brief drop-table
  * @ingroup Statement
- * @details 虽然解析成了stmt，但是与原始的SQL解析后的数据也差不多
+ * @author jzq
  */
 class DropTableStmt : public Stmt
 {
 public:
-  DropTableStmt(const std::string &table_name): table_name_(table_name) {}
+  DropTableStmt(const std::string &table_name) : table_name_(table_name) {}
   virtual ~DropTableStmt() = default;
 
   StmtType type() const override { return StmtType::DROP_TABLE; }

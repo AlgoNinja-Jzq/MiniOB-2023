@@ -25,10 +25,10 @@ See the Mulan PSL v2 for more details. */
 enum AttrType
 {
   UNDEFINED,
-  CHARS,   ///< 字符串类型
-  INTS,    ///< 整数类型(4字节)
-  FLOATS,  ///< 浮点数类型(4字节)
-  DATES,
+  CHARS,     ///< 字符串类型
+  INTS,      ///< 整数类型(4字节)
+  FLOATS,    ///< 浮点数类型(4字节)
+  DATES,     ///< date
   BOOLEANS,  ///< boolean类型，当前不是由parser解析出来的，是程序内部使用的
 };
 
@@ -48,7 +48,14 @@ public:
 
   explicit Value(int val);
   explicit Value(float val);
+
+  /**
+   * @brief date extension
+   * @param v
+   * @author jzq
+   */
   explicit Value(const char *v);
+
   explicit Value(bool val);
   explicit Value(const char *s, int len);
 
@@ -60,14 +67,27 @@ public:
   void set_data(const char *data, int length) { this->set_data(const_cast<char *>(data), length); }
   void set_int(int val);
   void set_float(float val);
+
+  /**
+   * @brief date extension
+   * @param v
+   * @author jzq
+   */
   void set_date(const char *v);
+
   void set_boolean(bool val);
   void set_string(const char *s, int len = 0);
   void set_value(const Value &value);
 
   std::string to_string() const;
 
-  int  compare(const Value &other) const;
+  int compare(const Value &other) const;
+
+  /**
+   * @brief like extension
+   * @param other
+   * @author jzq
+   */
   bool like(const Value &other) const;
 
   const char *data() const;
@@ -80,8 +100,13 @@ public:
    * 获取对应的值
    * 如果当前的类型与期望获取的类型不符，就会执行转换操作
    */
-  int         get_int() const;
-  float       get_float() const;
+  int   get_int() const;
+  float get_float() const;
+
+  /**
+   * @brief date extension
+   * @author jzq
+   */
   int         get_date() const;
   std::string get_string() const;
   bool        get_boolean() const;
@@ -90,6 +115,10 @@ private:
   AttrType attr_type_ = UNDEFINED;
   int      length_    = 0;
 
+  /**
+   * @brief date extension
+   * @author jzq
+   */
   union
   {
     int   int_value_;
@@ -100,5 +129,16 @@ private:
   std::string str_value_;
 };
 
-int   chars_to_ints(std::string str);
+/**
+ * @brief join-tables extension
+ * @param str
+ * @author jzq
+ */
+int chars_to_ints(std::string str);
+
+/**
+ * @brief join-tables extension
+ * @param str
+ * @author jzq
+ */
 float chars_to_floats(std::string str);

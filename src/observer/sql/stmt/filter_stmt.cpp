@@ -126,6 +126,10 @@ RC FilterStmt::create_filter_unit(Db *db, Table *default_table, std::unordered_m
     filter_obj.init_attr(Field(table, field));
     filter_unit->set_right(filter_obj);
   } else {
+    /**
+     * @brief date extension
+     * @author jzq
+     */
     if (condition.right_value.attr_type() == CHARS) {
       int y, m, d;
       int c = sscanf(condition.right_value.data(), "%d-%d-%d", &y, &m, &d);

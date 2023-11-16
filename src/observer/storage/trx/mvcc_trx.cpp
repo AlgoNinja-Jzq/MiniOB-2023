@@ -185,9 +185,16 @@ RC MvccTrx::delete_record(Table *table, Record &record)
   return RC::SUCCESS;
 }
 
+/**
+ * @brief update
+ * @param table
+ * @param record
+ * @param value
+ * @param offset
+ * @author jzq
+ */
 RC MvccTrx::update_record(Table *table, Record &record, Value &value, int offset)
 {
-  // 获取记录的开始版本和结束版本字段
   Field begin_field;
   Field end_field;
   trx_fields(table, begin_field, end_field);
@@ -196,7 +203,6 @@ RC MvccTrx::update_record(Table *table, Record &record, Value &value, int offset
   end_field.set_int(record, trx_kit_.max_trx_id());
 
   RC rc = table->update_record(record, value, offset);
-  // TODO
   return rc;
 }
 

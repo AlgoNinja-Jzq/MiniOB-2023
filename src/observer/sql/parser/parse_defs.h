@@ -41,8 +41,9 @@ struct RelAttrSqlNode
 };
 
 /**
- * @brief 描述比较运算符
+ * @brief 描述比较运算符 like extension
  * @ingroup SQLParser
+ * @author jzq
  */
 enum CompOp
 {
@@ -79,13 +80,9 @@ struct ConditionSqlNode
 };
 
 /**
- * @brief 描述查询的表以及表的连接条件
+ * @brief join-tables extension
+ * @author jzq
  */
-struct RelationSqlNode
-{
-  std::string table;
-};
-
 struct JoinSqlNode
 {
   std::vector<std::string>      relations;

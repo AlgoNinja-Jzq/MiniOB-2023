@@ -61,6 +61,10 @@ RC LogicalPlanGenerator::create(Stmt *stmt, unique_ptr<LogicalOperator> &logical
       rc                      = create_plan(delete_stmt, logical_operator);
     } break;
 
+      /**
+       * @brief update
+       * @author jzq
+       */
     case StmtType::UPDATE: {
       UpdateStmt *update_stmt = static_cast<UpdateStmt *>(stmt);
       rc                      = create_plan(update_stmt, logical_operator);
@@ -201,6 +205,12 @@ RC LogicalPlanGenerator::create_plan(DeleteStmt *delete_stmt, unique_ptr<Logical
   return rc;
 }
 
+/**
+ * @brief update
+ * @param update_stmt
+ * @param logical_operator
+ * @author jzq
+ */
 RC LogicalPlanGenerator::create_plan(UpdateStmt *update_stmt, unique_ptr<LogicalOperator> &logical_operator)
 {
   Table             *table       = update_stmt->table();

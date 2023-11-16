@@ -181,6 +181,13 @@ public:
    */
   RC delete_record(const RID *rid);
 
+  /**
+   * @brief update
+   * @param offset
+   * @param value
+   * @param rid
+   * @author jzq
+   */
   RC update_record(int offset, Value &value, RID *rid);
 
   /**
@@ -263,7 +270,11 @@ public:
   void close();
 
   /**
-   * @brief 更新一个记录
+   * @brief update
+   * @param offset
+   * @param value
+   * @param rid
+   * @author jzq
    */
   RC update_record(int offset, Value &value, RID *rid);
 

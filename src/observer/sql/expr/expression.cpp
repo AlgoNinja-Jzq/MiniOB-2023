@@ -83,6 +83,13 @@ ComparisonExpr::ComparisonExpr(CompOp comp, unique_ptr<Expression> left, unique_
 
 ComparisonExpr::~ComparisonExpr() {}
 
+/**
+ * @brief like extension
+ * @param left
+ * @param right
+ * @param result
+ * @author jzq
+ */
 RC ComparisonExpr::compare_value(const Value &left, const Value &right, bool &result) const
 {
   RC  rc         = RC::SUCCESS;

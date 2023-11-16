@@ -19,8 +19,17 @@ See the Mulan PSL v2 for more details. */
 #include "common/lang/comparator.h"
 #include "common/lang/string.h"
 
+/**
+ * @brief date extension
+ * @author jzq
+ */
 const char *ATTR_TYPE_NAME[] = {"undefined", "chars", "ints", "floats", "dates", "booleans"};
 
+/**
+ * @brief date extension
+ * @param type
+ * @author jzq
+ */
 const char *attr_type_to_string(AttrType type)
 {
   if (type >= UNDEFINED && type <= DATES) {
@@ -42,12 +51,25 @@ Value::Value(int val) { set_int(val); }
 
 Value::Value(float val) { set_float(val); }
 
+/**
+ * @brief date extension
+ * @param v
+ * @author jzq
+ */
 Value::Value(const char *v) { set_date(v); }
 
 Value::Value(bool val) { set_boolean(val); }
 
 Value::Value(const char *s, int len /*= 0*/) { set_string(s, len); }
 
+/**
+ * @brief date validity judge
+ * @param y year
+ * @param m month
+ * @param d day
+ * @return true or false
+ * @author jzq
+ */
 bool check_date(int y, int m, int d)
 {
   static int month[] = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
@@ -69,6 +91,11 @@ void Value::set_data(char *data, int length)
       num_value_.float_value_ = *(float *)data;
       length_                 = length;
     } break;
+
+      /**
+       * @brief date select display
+       * @author jzq
+       */
     case DATES: {
       num_value_.date_value_ = *(int *)data;
       char buf[16]           = {0};
@@ -105,6 +132,12 @@ void Value::set_float(float val)
   num_value_.float_value_ = val;
   length_                 = sizeof(val);
 }
+
+/**
+ * @brief date storage
+ * @param v
+ * @author jzq
+ */
 void Value::set_date(const char *v)
 {
   int y, m, d;
@@ -137,6 +170,11 @@ void Value::set_string(const char *s, int len /*= 0*/)
   length_ = str_value_.length();
 }
 
+/**
+ * @brief date extension
+ * @param value
+ * @author jzq
+ */
 void Value::set_value(const Value &value)
 {
   switch (value.attr_type_) {
@@ -173,6 +211,10 @@ const char *Value::data() const
   }
 }
 
+/**
+ * @brief date extension
+ * @author jzq
+ */
 std::string Value::to_string() const
 {
   std::stringstream os;
@@ -199,6 +241,12 @@ std::string Value::to_string() const
   return os.str();
 }
 
+/**
+ * @brief date comparison && join-tables extension
+ * @param other
+ * @return result
+ * @author jzq
+ */
 int Value::compare(const Value &other) const
 {
   if (this->attr_type_ == other.attr_type_) {
@@ -256,6 +304,11 @@ int Value::compare(const Value &other) const
   return -1;  // TODO return rc?
 }
 
+/**
+ * @brief like extension
+ * @param other
+ * @author jzq
+ */
 bool Value::like(const Value &other) const
 {
   if (this->attr_type_ != other.attr_type_ || this->attr_type_ != CHARS) {
@@ -416,6 +469,11 @@ bool Value::get_boolean() const
   return false;
 }
 
+/**
+ * @brief join-tables extension
+ * @param str
+ * @author jzq
+ */
 int chars_to_ints(std::string str)
 {
   std::string ret;
@@ -434,6 +492,11 @@ int chars_to_ints(std::string str)
   }
 }
 
+/**
+ * @brief join-tables extension
+ * @param str
+ * @author jzq
+ */
 float chars_to_floats(std::string str)
 {
   std::string ret;

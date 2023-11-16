@@ -1,9 +1,13 @@
-//
-// Created by jzq on 23-10-25.
-//
 #include "sql/stmt/drop_table_stmt.h"
 #include "event/sql_debug.h"
 
+/**
+ * @brief drop-table
+ * @param db
+ * @param drop_table
+ * @param stmt
+ * @author jzq
+ */
 RC DropTableStmt::create(Db *db, const DropTableSqlNode &drop_table, Stmt *&stmt)
 {
   stmt = new DropTableStmt(drop_table.relation_name);

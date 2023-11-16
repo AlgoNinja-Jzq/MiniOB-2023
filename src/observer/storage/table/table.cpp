@@ -122,6 +122,11 @@ RC Table::create(int32_t table_id, const char *path, const char *name, const cha
   return rc;
 }
 
+/**
+ * @brief drop-table
+ * @param dir
+ * @author jzq
+ */
 RC Table::destroy(const char *dir)
 {
   RC rc = sync();  // 刷新所有脏页
@@ -473,6 +478,13 @@ RC Table::delete_record(const Record &record)
   return rc;
 }
 
+/**
+ * @brief update
+ * @param record
+ * @param value
+ * @param offset
+ * @author jzq
+ */
 RC Table::update_record(Record &record, Value &value, int offset)
 {
   RC     rc = RC::SUCCESS;
@@ -482,7 +494,7 @@ RC Table::update_record(Record &record, Value &value, int offset)
     LOG_ERROR("Update record failed. table name=%s, rc=%s", table_meta_.name(), strrc(rc));
     return rc;
   }
-  // 更新索引
+  // update index
   for (auto index : indexes_) {
     index->delete_entry(origin_record.data(), &origin_record.rid());
     index->insert_entry(record.data(), &record.rid());

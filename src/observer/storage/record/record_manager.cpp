@@ -262,6 +262,13 @@ RC RecordPageHandler::delete_record(const RID *rid)
   }
 }
 
+/**
+ * @brief update
+ * @param offset
+ * @param value
+ * @param rid
+ * @author jzq
+ */
 RC RecordPageHandler::update_record(int offset, Value &value, RID *rid)
 {
   ASSERT(readonly_ == false, "cannot delete record from page while the page is readonly");
@@ -479,6 +486,13 @@ RC RecordFileHandler::delete_record(const RID *rid)
   return rc;
 }
 
+/**
+ * @brief update
+ * @param offset
+ * @param value
+ * @param rid
+ * @author jzq
+ */
 RC RecordFileHandler::update_record(int offset, Value &value, RID *rid)
 {
   RC rc = RC::SUCCESS;

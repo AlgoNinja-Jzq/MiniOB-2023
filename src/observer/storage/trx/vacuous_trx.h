@@ -43,7 +43,17 @@ public:
 
   RC insert_record(Table *table, Record &record) override;
   RC delete_record(Table *table, Record &record) override;
+
+  /**
+   * @brief update
+   * @param table
+   * @param record
+   * @param value
+   * @param offset
+   * @author jzq
+   */
   RC update_record(Table *table, Record &record, Value &value, int offset) override;
+
   RC visit_record(Table *table, Record &record, bool readonly) override;
   RC start_if_need() override;
   RC commit() override;

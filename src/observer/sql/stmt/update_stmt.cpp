@@ -28,6 +28,13 @@ UpdateStmt::UpdateStmt(
       attribute_name_(attribute_name)
 {}
 
+/**
+ * @brief update
+ * @param db
+ * @param update
+ * @param stmt
+ * @author jzq
+ */
 RC UpdateStmt::create(Db *db, const UpdateSqlNode &update, Stmt *&stmt)
 {
   // TODO
@@ -37,13 +44,13 @@ RC UpdateStmt::create(Db *db, const UpdateSqlNode &update, Stmt *&stmt)
     return RC::INVALID_ARGUMENT;
   }
 
-  // 检查表格是否存在
+  // check whether table exists
   Table *table = db->find_table(table_name);
   if (nullptr == table) {
     LOG_WARN("no such table. db=%s, table_name=%s", db->name(), table_name);
   }
 
-  // 生成过滤条件
+  // generate filter condition
   std::unordered_map<std::string, Table *> table_map;
   table_map.insert(std::pair<std::string, Table *>(std::string(table_name), table));
   FilterStmt *filter_stmt = nullptr;
@@ -57,14 +64,14 @@ RC UpdateStmt::create(Db *db, const UpdateSqlNode &update, Stmt *&stmt)
   Value            value      = update.value;
   const TableMeta &table_meta = table->table_meta();
 
-  // 检查插入的字段
+  // check field to be inserted
   const std::string attribute_name = update.attribute_name;
   const int         sys_field_num  = table_meta.sys_field_num();
   const int         field_num      = table_meta.field_num();
 
   for (int i = 0; i < field_num; i++) {
     const FieldMeta *field_meta = table_meta.field(i + sys_field_num);
-    // 找到要更新的字段
+    // find field to be updated
     if (field_meta->name() == attribute_name) {
       const AttrType field_type = field_meta->type();
       const AttrType value_type = value.attr_type();
@@ -73,7 +80,7 @@ RC UpdateStmt::create(Db *db, const UpdateSqlNode &update, Stmt *&stmt)
           const_cast<Value *>(&value)->set_date(value.data());
         }
       }
-      // 生成 stmt
+      // generate stmt
       stmt = new UpdateStmt(table, &value, 1, filter_stmt, attribute_name);
       return RC::SUCCESS;
     }
