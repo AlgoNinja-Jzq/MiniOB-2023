@@ -311,25 +311,10 @@ int Value::compare(const Value &other) const
  */
 bool Value::like(const Value &other) const
 {
-  if (this->attr_type_ != other.attr_type_ || this->attr_type_ != CHARS) {
-    LOG_WARN("not supported");
-    return false;
-  }
-
-  std::string ssleft(this->data(), this->length_);
-  std::string left = std::string(this->data(), strlen(ssleft.c_str()));
-  std::string ssright(other.data(), other.length_);
-  std::string right = std::string(other.data(), strlen(ssright.c_str()));
-  // replace '_' -> '.', '%' -> '.*?';
-  std::string::size_type pos(0);
-  while ((pos = right.find('_')) != std::string::npos) {
-    right.replace(pos, 1, ".");
-  }
-  while ((pos = right.find('%')) != std::string::npos) {
-    right.replace(pos, 1, ".*?");
-  }
-  std::regex reg(right);
-  return std::regex_match(left, reg);
+  std::string regexPattern = std::regex_replace(other.str_value_, std::regex("%"), ".*");
+  regexPattern             = std::regex_replace(regexPattern, std::regex("_"), ".");
+  std::regex regexMatcher(regexPattern);
+  return std::regex_match(this->str_value_, regexMatcher);
 }
 
 int Value::get_int() const
