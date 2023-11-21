@@ -281,15 +281,15 @@ RC RecordPageHandler::update_record(int offset, Value &value, RID *rid)
     LOG_DEBUG("Invalid slot_num %d, slot is empty, page_num %d.", rid->slot_num, frame_->page_num());
     return RC::RECORD_NOT_EXIST;
   }
-  // 获取原数据
+  // get original data
   // char *src_data = frame_->data() + page_header_->first_record_offset + (page_header_->record_size * rid->slot_num);
   char *src_data = get_record_data(rid->slot_num);
-  // 找到要修改的位置
+  // find the pos to be changed
   char       *change_loc = (char *)((uint64_t)(src_data) + offset);
   const char *data       = value.data();
   // the last param counts !
   memcpy(change_loc, data, strlen(data) + 1);
-  // 标为脏页, 刷回磁盘
+  // page mark dirty flush back to disk
   frame_->mark_dirty();
   return RC::SUCCESS;
 }
